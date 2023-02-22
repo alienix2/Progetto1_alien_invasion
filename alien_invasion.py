@@ -16,7 +16,7 @@ class AlienInvasion:
         #background color
         self.settings = Settings()
         
-        self.screen = pygame.display.set_mode((self.settings.screen_height, self.settings.screen_width))
+        self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         pygame.display.set_caption(self.settings.caption)
         
         #Disegno la navetta
@@ -28,10 +28,28 @@ class AlienInvasion:
         #Definisco il gruppo di sprites per gli alieni e li creo all'inizio
         self.aliens = pygame.sprite.Group()
         self.create_fleet()
-        
+       
+    def create_alien(self, x_alien_number, y_alien_number):
+        new_alien = Alien(self)
+        new_alien.x_position = self.alien_width + 1.5 * self.alien_width * x_alien_number
+        new_alien.y_position = self.alien_height + 1.5 * self.alien_height *y_alien_number
+        new_alien.rect.x = new_alien.x_position
+        new_alien.rect.y = new_alien.y_position
+        self.aliens.add(new_alien)   
+     
     def create_fleet(self):
-        """Creates the fleet of aliens"""
-        self.aliens.add(Alien(self))
+        """Crea la prima riga di alieni"""
+        new_alien = Alien(self)
+        self.aliens.add(new_alien)
+        self.alien_width, self.alien_height = new_alien.rect.size
+
+        #Numero di alieni da spawnare
+        self.x_aliens_number = (self.settings.screen_width - (2 * self.alien_width)) // (1.5 * self.alien_width)
+        self.y_aliens_number = ((self.settings.screen_height) - 2/5 * (self.settings.screen_height)) // (1.5 * self.alien_height)
+        
+        for y_alien_number in range(int(self.y_aliens_number)):
+            for x_alien_number in range(int(self.x_aliens_number)):
+                self.create_alien(x_alien_number, y_alien_number)        
     
     def clear_junk(self):
         for bullet in self.bullets.copy():
@@ -71,7 +89,7 @@ class AlienInvasion:
         """aggiorna lo stato dei proiettili"""
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
-        self.clear_junk
+        self.clear_junk()
                 
     def update_screen(self):
         """Aggiorna lo schermo generale"""
@@ -82,9 +100,9 @@ class AlienInvasion:
         self.ship.blitme()
         #Disegno i proiettili nelle nuove posizioni
         self.update_bullets()
-        #Disegno la flotta di alieni
+        #Disegno la flotta di alieni nelle nuove posizioni
         self.aliens.draw(self.screen)
-        
+
         #Rimuovo la roba dallo schermo
         self.clear_junk()
         
@@ -103,6 +121,9 @@ class AlienInvasion:
             
             #Cambia la posizione dei proiettili in base al tempo
             self.bullets.update()
+            
+            #Cambia la posizione degli alieni in base al tempo
+            self.aliens.update()
             
             #Aggiorno effettivamente le cose disegnate a schermo
             self.update_screen()
