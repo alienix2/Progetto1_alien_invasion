@@ -23,7 +23,12 @@ class AlienInvasion:
         
         #Definisco il gruppo di sprites per i proiettili
         self.bullets = pygame.sprite.Group()
-        
+     
+    def clear_junk(self):
+        for bullet in self.bullets.copy():
+            if bullet.rect.bottom <= 0:
+                self.bullets.remove(bullet)
+       
     def check_keydown_events(self, event):
         """Risponde se un pulsante è premuto"""
         if event.key == pygame.K_RIGHT:
@@ -33,7 +38,7 @@ class AlienInvasion:
         elif event.key == pygame.K_q:
             sys.exit()
         elif event.key == pygame.K_SPACE:
-            self.bullets.add(Bullet(self))
+            if len(self.bullets) <= self.settings.bullets_limit : self.bullets.add(Bullet(self))
             
     def check_keyup_events(self, event):
         """Risponde se un pulsante è rilasciato"""
@@ -52,13 +57,22 @@ class AlienInvasion:
                     self.check_keydown_events(event)
                 elif event.type == pygame.KEYUP:
                     self.check_keyup_events(event)
-                
-                
-    def update_screen(self):
-        self.screen.fill(self.settings.bg_color)
-        self.ship.blitme()
+    
+    def update_bullets(self):
+        """aggiorna lo stato dei proiettili"""
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
+        self.clear_junk
+                
+    def update_screen(self):
+        """Aggiorna lo schermo generale"""
+        
+        #In questa parte si aggiorna lo sfondo in modo che le cose che disegno sparicano nelle loro "vecchie posizioni"
+        self.screen.fill(self.settings.bg_color)
+        #Disegno la navetta nella nuova posizione
+        self.ship.blitme()
+        #Disegno i proiettili nelle nuove posizioni
+        self.update_bullets()
         
         #Mostro il display aggiornato
         pygame.display.flip()
@@ -76,7 +90,10 @@ class AlienInvasion:
             #Cambia la posizione dei proiettili in base al tempo
             self.bullets.update()
             
-            #Aggiorno lo schermo
+            #Rimuovo i proiettili che escono dallo schermo
+            self.clear_junk()
+            
+            #Aggiorno effettivamente le cose disegnate a schermo
             self.update_screen()
     
 if __name__ == "__main__":
