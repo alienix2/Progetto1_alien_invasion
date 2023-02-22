@@ -85,6 +85,9 @@ class AlienInvasion:
         #Disegno la flotta di alieni
         self.aliens.draw(self.screen)
         
+        #Rimuovo la roba dallo schermo
+        self.clear_junk()
+        
         #Mostro il display aggiornato
         pygame.display.flip()
     
@@ -100,9 +103,6 @@ class AlienInvasion:
             
             #Cambia la posizione dei proiettili in base al tempo
             self.bullets.update()
-            
-            #Rimuovo i proiettili che escono dallo schermo
-            self.clear_junk()
             
             #Aggiorno effettivamente le cose disegnate a schermo
             self.update_screen()
