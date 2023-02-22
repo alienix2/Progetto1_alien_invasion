@@ -3,6 +3,7 @@ import pygame
 
 from settings import Settings
 from ship import Ship
+from bullet import Bullet
 
 class AlienInvasion:
     """Classe base per gestire assets e comportamento"""
@@ -20,6 +21,9 @@ class AlienInvasion:
         #Disegno la navetta
         self.ship = Ship(self)
         
+        #Definisco il gruppo di sprites per i proiettili
+        self.bullets = pygame.sprite.Group()
+        
     def check_keydown_events(self, event):
         """Risponde se un pulsante è premuto"""
         if event.key == pygame.K_RIGHT:
@@ -28,6 +32,8 @@ class AlienInvasion:
             self.ship.moving_left = True
         elif event.key == pygame.K_q:
             sys.exit()
+        elif event.key == pygame.K_SPACE:
+            self.bullets.add(Bullet(self))
             
     def check_keyup_events(self, event):
         """Risponde se un pulsante è rilasciato"""
@@ -51,6 +57,8 @@ class AlienInvasion:
     def update_screen(self):
         self.screen.fill(self.settings.bg_color)
         self.ship.blitme()
+        for bullet in self.bullets.sprites():
+            bullet.draw_bullet()
         
         #Mostro il display aggiornato
         pygame.display.flip()
@@ -63,7 +71,10 @@ class AlienInvasion:
             self.check_events()
             
             #Cambia la posizione della nave in base alla situazione dei tasti
-            self.ship.update_position()
+            self.ship.update()
+            
+            #Cambia la posizione dei proiettili in base al tempo
+            self.bullets.update()
             
             #Aggiorno lo schermo
             self.update_screen()

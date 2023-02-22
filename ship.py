@@ -27,7 +27,7 @@ class Ship:
         self.moving_right = False
         self.moving_left = False
     
-    def update_position(self):
+    def update(self):
         """Aggiorna la posizione della nave"""
         
         if self.moving_right == True:

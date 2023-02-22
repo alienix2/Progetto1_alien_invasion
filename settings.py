@@ -1,5 +1,7 @@
 import pygame
 
+from pygame.sprite import Sprite
+
 class Settings:
     """Class that stores settings for the game"""
     
@@ -12,3 +14,9 @@ class Settings:
         
         #Impostazioni della navicella
         self.ship_speed = 0.5
+        
+        #Impostazioni del proiettile
+        self.bullet_speed = 1.5
+        self.bullet_width = 3
+        self.bullet_height = 15
+        self.bullet_color = (0, 0, 0)
