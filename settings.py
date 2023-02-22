@@ -23,4 +23,6 @@ class Settings:
         self.bullet_color = (0, 0, 0)
         
         #Impostazioni degli alieni
-        self.alien_speed = 1
+        self.fleet_speed = 0.5
+        self.fleet_drop_speed = 10
+        self.fleet_direction = 1 #1 destra, -1 sinistra

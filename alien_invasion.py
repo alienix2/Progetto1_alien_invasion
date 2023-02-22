@@ -87,9 +87,29 @@ class AlienInvasion:
     
     def update_bullets(self):
         """aggiorna lo stato dei proiettili"""
+        
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
         self.clear_junk()
+        
+        #Controllo se un proiettile ha colpito un alieno (fa tutto il framework in pratica)
+        collisions = pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
+        
+        #Se non ci sono più alieni resetto i proiettili e creo una nuova flotta
+        if not self.aliens:
+            self.bullets.empty()
+            self.create_fleet()
+    
+    def update_aliens(self):
+        """Aggiorna lo stato della flotta di alieni"""
+        
+        for alien in self.aliens.sprites():
+            if alien.check_edges():
+                for alien in self.aliens.sprites():
+                    alien.rect.y += self.settings.fleet_drop_speed
+                alien.settings.fleet_direction *= -1
+                break
+        self.aliens.update()
                 
     def update_screen(self):
         """Aggiorna lo schermo generale"""
@@ -123,7 +143,7 @@ class AlienInvasion:
             self.bullets.update()
             
             #Cambia la posizione degli alieni in base al tempo
-            self.aliens.update()
+            self.update_aliens()
             
             #Aggiorno effettivamente le cose disegnate a schermo
             self.update_screen()
