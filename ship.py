@@ -14,7 +14,7 @@ class Ship:
         
         #Carico la foto nel rettangolo della navetta
         self.image = pygame.image.load(".\progetto1_alien_invasion\images\ship.bmp")
-        self.image.set_colorkey((230,230,230))
+        self.image.set_colorkey((230,230,230))  #Rimuovo lo sfondo grigio
         self.rect = self.image.get_rect()
         
         #Metto la navicella in fondo allo schermo in centro
