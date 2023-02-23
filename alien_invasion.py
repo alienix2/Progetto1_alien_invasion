@@ -1,10 +1,12 @@
 import sys
 import pygame
+from time import sleep
 
 from settings import Settings
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
+from game_stats import GameStats
 
 class AlienInvasion:
     """Classe base per gestire assets e comportamento"""
@@ -13,7 +15,6 @@ class AlienInvasion:
         #Inizializza il gioco
         pygame.init()
         
-        #background color
         self.settings = Settings()
         
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
@@ -22,6 +23,9 @@ class AlienInvasion:
         #Disegno la navetta
         self.ship = Ship(self)
         
+        #Inizializzo le statistiche per il gioco
+        self.game_stats = GameStats(self)
+
         #Definisco il gruppo di sprites per i proiettili
         self.bullets = pygame.sprite.Group()
         
@@ -55,6 +59,19 @@ class AlienInvasion:
         for bullet in self.bullets.copy():
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
+    
+    def ship_hit(self):
+        """Comportamento del programma quando la navetta è colpita dagli alieni"""
+        
+        self.game_stats.ships_left -= 1
+        self.bullets.empty()
+        self.aliens.empty()
+        
+        self.create_fleet()
+        self.ship.center_ship()
+        
+        #Inserisco una pausa per far capire al giocatore che è stato colpito
+        sleep(1)
        
     def check_keydown_events(self, event):
         """Risponde se un pulsante è premuto"""
@@ -85,12 +102,8 @@ class AlienInvasion:
                 elif event.type == pygame.KEYUP:
                     self.check_keyup_events(event)
     
-    def update_bullets(self):
-        """aggiorna lo stato dei proiettili"""
-        
-        for bullet in self.bullets.sprites():
-            bullet.draw_bullet()
-        self.clear_junk()
+    def detect_bullet_alien_collisions(self):
+        """Controlla se ci sono collisioni fra alieni e proiettili"""
         
         #Controllo se un proiettile ha colpito un alieno (fa tutto il framework in pratica)
         collisions = pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
@@ -100,6 +113,35 @@ class AlienInvasion:
             self.bullets.empty()
             self.create_fleet()
     
+    def detect_alien_ship_collision(self):
+        """Controlla se un alieno ha toccato la navetta"""
+        
+        if pygame.sprite.spritecollideany(self.ship, self.aliens):
+            self.ship_hit()
+    
+    def detect_alien_bottom_screen(self):
+        """Controlla se un alieno ha raggiunto il fondo dello schermo"""
+        
+        screen_rect = self.screen.get_rect()
+        for alien in self.aliens.sprites():
+            if alien.rect.bottom >= screen_rect.bottom:
+                #Non è stata colpita ma attuo lo stesso comportamento che se lo fosse
+                self.ship_hit()
+                break
+    
+    def update_bullets(self):
+        """aggiorna lo stato dei proiettili"""
+        
+        for bullet in self.bullets.sprites():
+            bullet.draw_bullet()
+                    
+        #Gestisco le collisioni
+        self.detect_bullet_alien_collisions()
+        
+        #Rimuovo gli sprites che sono fuori dallo schermo
+        self.clear_junk()
+
+        
     def update_aliens(self):
         """Aggiorna lo stato della flotta di alieni"""
         
@@ -110,6 +152,9 @@ class AlienInvasion:
                 alien.settings.fleet_direction *= -1
                 break
         self.aliens.update()
+        
+        self.detect_alien_ship_collision()
+        self.detect_alien_bottom_screen()
                 
     def update_screen(self):
         """Aggiorna lo schermo generale"""

@@ -24,5 +24,8 @@ class Settings:
         
         #Impostazioni degli alieni
         self.fleet_speed = 0.5
-        self.fleet_drop_speed = 10
+        self.fleet_drop_speed = 30
         self.fleet_direction = 1 #1 destra, -1 sinistra
+        
+        #Impostazioni delle statistiche
+        self.ships_number_limit = 3
