@@ -28,4 +28,4 @@ class Settings:
         self.fleet_direction = 1 #1 destra, -1 sinistra
         
         #Impostazioni delle statistiche
-        self.ships_number_limit = 3
+        self.ships_number_limit = 1

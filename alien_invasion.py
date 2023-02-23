@@ -63,15 +63,20 @@ class AlienInvasion:
     def ship_hit(self):
         """Comportamento del programma quando la navetta è colpita dagli alieni"""
         
-        self.game_stats.ships_left -= 1
+        if self.game_stats.ships_left > 0:
+            self.game_stats.ships_left -= 1
+            #Inserisco una pausa per far capire al giocatore che è stato colpito
+            sleep(1)
+        else:
+            self.game_stats.game_active = False
+            
         self.bullets.empty()
         self.aliens.empty()
         
         self.create_fleet()
         self.ship.center_ship()
         
-        #Inserisco una pausa per far capire al giocatore che è stato colpito
-        sleep(1)
+        
        
     def check_keydown_events(self, event):
         """Risponde se un pulsante è premuto"""
@@ -81,6 +86,10 @@ class AlienInvasion:
             self.ship.moving_left = True
         elif event.key == pygame.K_q:
             sys.exit()
+        elif event.key == pygame.K_r:
+            if not self.game_stats.game_active:
+                self.game_stats.reset_stats()
+                self.game_stats.game_active = True
         elif event.key == pygame.K_SPACE:
             if len(self.bullets) <= self.settings.bullets_limit : self.bullets.add(Bullet(self))
             
@@ -181,14 +190,13 @@ class AlienInvasion:
             #Controllo se ci sono eventi di mouse o tastiera
             self.check_events()
             
-            #Cambia la posizione della nave in base alla situazione dei tasti
-            self.ship.update()
-            
-            #Cambia la posizione dei proiettili in base al tempo
-            self.bullets.update()
-            
-            #Cambia la posizione degli alieni in base al tempo
-            self.update_aliens()
+            if self.game_stats.game_active:
+                #Cambia la posizione della nave in base alla situazione dei tasti
+                self.ship.update()
+                #Cambia la posizione dei proiettili in base al tempo
+                self.bullets.update()
+                #Cambia la posizione degli alieni in base al tempo
+                self.update_aliens()
             
             #Aggiorno effettivamente le cose disegnate a schermo
             self.update_screen()
