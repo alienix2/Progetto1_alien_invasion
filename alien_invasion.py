@@ -7,6 +7,7 @@ from ship import Ship
 from bullet import Bullet
 from alien import Alien
 from game_stats import GameStats
+from button import Button
 
 class AlienInvasion:
     """Classe base per gestire assets e comportamento"""
@@ -22,10 +23,14 @@ class AlienInvasion:
         
         #Disegno la navetta
         self.ship = Ship(self)
-        
+                
         #Inizializzo le statistiche per il gioco
         self.game_stats = GameStats(self)
+        self.game_stats.game_active = False
 
+        #Disegno il pulsante da premere per iniziare il gioco
+        self.start_button = Button(self, "Inizia a giocare")
+        
         #Definisco il gruppo di sprites per i proiettili
         self.bullets = pygame.sprite.Group()
         
@@ -75,9 +80,7 @@ class AlienInvasion:
         
         self.create_fleet()
         self.ship.center_ship()
-        
-        
-       
+            
     def check_keydown_events(self, event):
         """Risponde se un pulsante è premuto"""
         if event.key == pygame.K_RIGHT:
@@ -176,6 +179,10 @@ class AlienInvasion:
         self.update_bullets()
         #Disegno la flotta di alieni nelle nuove posizioni
         self.aliens.draw(self.screen)
+        
+        if not self.game_stats.game_active:
+            print("Disegno il bottone?")
+            self.start_button.draw_button()
 
         #Rimuovo la roba dallo schermo
         self.clear_junk()
@@ -197,7 +204,7 @@ class AlienInvasion:
                 self.bullets.update()
                 #Cambia la posizione degli alieni in base al tempo
                 self.update_aliens()
-            
+                
             #Aggiorno effettivamente le cose disegnate a schermo
             self.update_screen()
     
