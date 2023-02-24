@@ -7,6 +7,7 @@ class Settings:
     
     def __init__(self):
         """Inizializza le impostazioni del gioco"""
+        
         self.screen_width = 800
         self.screen_height = 800
         self.bg_color = (200, 255, 100)
@@ -28,4 +29,19 @@ class Settings:
         self.fleet_direction = 1 #1 destra, -1 sinistra
         
         #Impostazioni delle statistiche
-        self.ships_number_limit = 1
+        self.ships_number_limit = 2
+        
+        #Impostazione dell'aumento di difficoltà graduale
+        self.speedup_scale = 1.1
+    
+    def inizialize_speed_values(self):
+        self.ship_speed = 0.5
+        self.bullet_speed = 1.5
+        self.fleet_speed = 1.0    
+        
+    def increase_speed(self):
+        """Aumenta la velocità (nota aumenta anche la velocità dei proiettili1)"""
+        
+        self.ship_speed *= self.speedup_scale
+        self.bullet_speed *= self.speedup_scale
+        self.fleet_speed *= self.speedup_scale
