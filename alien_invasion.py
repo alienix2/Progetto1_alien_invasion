@@ -79,6 +79,7 @@ class AlienInvasion:
         self.game_stats.reset_stats()
         self.score.prep_score_image()
         self.score.prep_level_image()
+        self.score.prep_ships()
         self.game_stats.game_active = True
         self.settings.inizialize_speed_values()
         self.settings.inizialize_points_values()
@@ -95,6 +96,7 @@ class AlienInvasion:
                     
         self.bullets.empty()
         self.aliens.empty()
+        self.score.prep_ships()
         
         self.create_fleet()
         self.ship.center_ship()

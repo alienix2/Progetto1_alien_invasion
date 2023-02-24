@@ -1,11 +1,16 @@
 import pygame
 
+from pygame.sprite import Group
+
+from ship import Ship
+
 class Scoreboard:
     """Classe che riporta dei risultati"""
     
     def __init__(self, game):
         """Inizializza gli attributi"""
         
+        self.game = game
         self.screen = game.screen
         self.screen_rect = game.screen.get_rect()
         self.settings = game.settings
@@ -19,6 +24,7 @@ class Scoreboard:
         self.prep_score_image()
         self.prep_level_image()
         self.prep_highscore_image()
+        self.prep_ships()
         
     def prep_score_image(self):
         """Inizializza l'immagine dello score"""
@@ -53,16 +59,26 @@ class Scoreboard:
         self.level_rect.left = self.screen_rect.left
         self.level_rect.top = 60
     
+    def prep_ships(self):
+        """Disegna le navicelle rimaste a schermo"""
+        
+        self.ships = Group()
+        for ship_number in range(self.game_stats.ships_left + 1):
+            ship = Ship(self.game)
+            ship.rect.x = self.screen_rect.right - ship_number * ship.rect.width
+            ship.rect.y = 0
+            self.ships.add(ship)
+    
     def set_highscore(self):
         """Se è stato battuto il record reimposta l'hishscore"""
         
-        print(self.game_stats.score)
         if self.game_stats.score > self.game_stats.highscore:
             self.game_stats.highscore = self.game_stats.score
             self.prep_highscore_image()
     
     def draw_score(self):
-        """Disegno effettivamente il mio score"""
+        """Disegno effettivamente tutta la mia scoreboard"""
         self.screen.blit(self.score_image, self.score_rect)
         self.screen.blit(self.highscore_image, self.highscore_rect)
         self.screen.blit(self.level_image, self.level_rect)
+        self.ships.draw(self.screen)

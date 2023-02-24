@@ -24,7 +24,7 @@ class Settings:
         self.fleet_direction = 1 #1 destra, -1 sinistra
         
         #Impostazioni delle statistiche
-        self.ships_number_limit = 0
+        self.ships_number_limit = 3
         
         #Impostazione dell'aumento di difficoltà graduale
         self.speedup_scale = 1.1

@@ -1,12 +1,15 @@
 import pygame
+from pygame.sprite import Sprite
 
 import settings
 
-class Ship:
+class Ship(Sprite):
     """Classe che definisce una navetta"""
     
     def __init__(self, game):
         """Inizializza la navetta"""
+        
+        super().__init__()
         
         self.screen = game.screen
         self.screen_rect = game.screen.get_rect()
