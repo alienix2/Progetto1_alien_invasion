@@ -78,6 +78,7 @@ class AlienInvasion:
         
         self.game_stats.reset_stats()
         self.score.prep_score_image()
+        self.score.prep_level_image()
         self.game_stats.game_active = True
         self.settings.inizialize_speed_values()
         self.settings.inizialize_points_values()
@@ -158,6 +159,10 @@ class AlienInvasion:
         
         self.bullets.empty()
         self.create_fleet()
+        
+        #Aumento il numero del livello e la velocità del gioco
+        self.game_stats.level += 1
+        self.score.prep_level_image()
         self.settings.increase_speed()
 
     
@@ -173,12 +178,12 @@ class AlienInvasion:
         
         if collisions:
             for collisions in collisions.values():
-                print("Collisione")
                 self.game_stats.score += self.settings.alien_points * len(collisions)
+            
+            #Aggiona lo score e controlla se l'highscore è stato superato
             self.score.prep_score_image()
+            self.score.set_highscore()
         
-        
-    
     def detect_alien_ship_collision(self):
         """Controlla se un alieno ha toccato la navetta"""
         
